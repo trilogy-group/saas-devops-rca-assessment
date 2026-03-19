@@ -43,9 +43,11 @@ Configure Cline's MCP connection to the assessment server:
    ```json
    {
      "mcpServers": {
-       "devops-rca": {
-         "url": "https://hiring.devops.trilogy.com/mcp",
-         "type": "streamableHttp"
+       "devops-rca-assessment": {
+         "disabled": false,
+         "timeout": 60,
+         "type": "sse",
+         "url": "https://hiring.devops.trilogy.com/mcp"
        }
      }
    }
