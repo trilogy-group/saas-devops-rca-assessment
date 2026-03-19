@@ -45,7 +45,7 @@ Configure Cline's MCP connection to the assessment server:
      "mcpServers": {
        "devops-rca": {
          "url": "https://hiring.devops.trilogy.com/mcp",
-         "transportType": "streamable-http"
+         "type": "streamableHttp"
        }
      }
    }
