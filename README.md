@@ -36,23 +36,13 @@ Cline is pre-installed in this Codespace. Configure it to use our API:
 
 Configure Cline's MCP connection to the assessment server:
 
-1. In the Cline panel, click the **settings gear** icon (top-right corner)
-2. Go to the **MCP Servers** tab
-3. Click **Edit MCP Settings** to open `cline_mcp_settings.json`
-4. Replace the contents with:
-   ```json
-   {
-     "mcpServers": {
-       "devops-rca-assessment": {
-         "type": "streamableHttp",
-         "url": "https://hiring.devops.trilogy.com/mcp",
-         "disabled": false,
-         "timeout": 60
-       }
-     }
-   }
-   ```
-5. Save the file and go back to the MCP Servers tab — you should see **devops-rca** listed with its tools
+1. In the Cline panel, click the **Server Type** icon (stacked layers icon in the top bar)
+2. Click **Remote MCP Servers**
+3. Enter:
+   - **Name**: `devops-rca` (or any name you prefer)
+   - **URL**: `https://hiring.devops.trilogy.com/mcp`
+   - **Transport Type**: `Streamable HTTP`
+4. Click **Add Server** — you should see the available investigation tools listed
 
 ### Step 3: Start Your Session
 
