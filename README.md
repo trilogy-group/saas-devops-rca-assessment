@@ -27,7 +27,7 @@ Cline is pre-installed in this Codespace. Configure it to use our API:
 2. Open Cline settings (from the Cline landing page → **Use your own key**, or press `F1` → **Cline: Focus on View** → Settings wheel → **API Configuration** tab)
 3. Set the following:
    - **Provider**: `OpenAI Compatible`
-   - **Base URL**: `<<provided on SurveyMonkey>>`
+   - **Base URL**: `https://wnogqpmdu74ndach7m36xntowe0ecgzb.lambda-url.us-east-1.on.aws/v1/`
    - **API Key**: Your **Submission ID** (from the SurveyMonkey form)
    - **Model ID**: `gpt-5.2`
 4. Do **NOT** use GitHub Copilot or any other AI assistant — use only Cline
