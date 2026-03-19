@@ -205,12 +205,29 @@ def read_rca_report(repo_root: Path) -> str:
 # ---------------------------------------------------------------------------
 
 
+def get_submission_id() -> str:
+    """Get the Submission ID from CLI argument or interactive prompt."""
+    if len(sys.argv) > 1:
+        return sys.argv[1].strip()
+
+    print("  Enter your Submission ID (from SurveyMonkey): ", end="", flush=True)
+    sid = input().strip()
+    if not sid:
+        print("Error: Submission ID is required.", file=sys.stderr)
+        sys.exit(1)
+    return sid
+
+
 def main():
     repo_root = Path(__file__).resolve().parent.parent
 
     print()
     print("=== DevOps RCA Assessment — Submission ===")
     print()
+
+    # 0. Get Submission ID
+    submission_id = get_submission_id()
+    print(f"  Submission ID:   {submission_id[:8]}...")
 
     # 1. Read RCA
     rca_text = read_rca_report(repo_root)
@@ -249,7 +266,7 @@ def main():
     # 4. Submit via submit_rca_v2 (fallback to submit_rca)
     print("  Submitting...")
 
-    submit_args: dict = {"rca_summary": rca_text}
+    submit_args: dict = {"rca_summary": rca_text, "submission_id": submission_id}
     if cline_history:
         submit_args["cline_history"] = cline_history
         submit_args["tool_call_summary"] = tool_call_summary

@@ -12,14 +12,14 @@ You will use **Cline** (the AI assistant pre-installed in this Codespace) to con
 
 ## Prerequisites
 
-- Your **Salesforce Application Step Result ID** (provided in your assessment email)
+- Your **Submission ID** (shown on the SurveyMonkey form that brought you here)
 - Your **Crossover candidate email address**
 
 ---
 
 ## Getting Started
 
-### Step 1: Configure Cline
+### Step 1: Configure Cline API
 
 Cline is pre-installed in this Codespace. Configure it to use our API:
 
@@ -27,8 +27,8 @@ Cline is pre-installed in this Codespace. Configure it to use our API:
 2. Open Cline settings (from the Cline landing page → **Use your own key**, or press `F1` → **Cline: Focus on View** → Settings wheel → **API Configuration** tab)
 3. Set the following:
    - **Provider**: `OpenAI Compatible`
-   - **Base URL**: *(provided in the SurveyMonkey form)*
-   - **API Key**: Your **Salesforce Application Step Result ID** (the same ID from your assessment email)
+   - **Base URL**: `<<provided on SurveyMonkey>>`
+   - **API Key**: Your **Submission ID** (from the SurveyMonkey form)
    - **Model ID**: `gpt-5.2`
 4. Do **NOT** use GitHub Copilot or any other AI assistant — use only Cline
 
@@ -36,15 +36,17 @@ Cline is pre-installed in this Codespace. Configure it to use our API:
 
 Configure Cline's MCP connection to the assessment server:
 
-- **MCP Server URL**: `https://hiring.devops.trilogy.com/mcp`
-- **Transport type**: Streamable HTTP
-
-Refer to [Cline's MCP documentation](https://docs.cline.bot/mcp-servers/configuring-mcp-servers) for configuration steps.
+1. In Cline, click the **MCP Servers** icon (plug icon in the top bar)
+2. Click **Remote Servers** → **Add Remote MCP Server**
+3. Enter:
+   - **Server URL**: `https://hiring.devops.trilogy.com/mcp`
+   - **Server Name**: `devops-rca` (or any name you prefer)
+4. Click **Add** and verify the server connects (you should see the available tools listed)
 
 ### Step 3: Start Your Session
 
 Ask Cline to call the `start_session` tool with:
-- Your **Salesforce Application Step Result ID**
+- Your **Submission ID**
 - Your **full name**
 - Your **email address**
 
@@ -64,7 +66,7 @@ Use Cline to investigate **PRODUCT-48517** using the available tools:
 
 ### Step 5: Write Your RCA Report
 
-Create your RCA report in **`RCA_REPORT.md`** at the root of this repository. Follow the template in `RCA_TEMPLATE.md`.
+Create your RCA report in **`RCA_REPORT.md`** at the root of this repository. Use `RCA_TEMPLATE.md` as your starting point.
 
 Focus on technical accuracy and evidence. No need for long prose — fill out every section with specific data from your investigation.
 
@@ -73,8 +75,10 @@ Focus on technical accuracy and evidence. No need for long prose — fill out ev
 Run from the terminal:
 
 ```bash
-npm run submit
+./submit YOUR_SUBMISSION_ID
 ```
+
+Replace `YOUR_SUBMISSION_ID` with the Submission ID from the SurveyMonkey form.
 
 This automatically:
 - Captures your RCA report from `RCA_REPORT.md`
@@ -101,11 +105,11 @@ This automatically:
 | Issue | Solution |
 |-------|----------|
 | "Session required" error | Ask Cline to call `start_session` first |
-| "SF validation failed" | Double-check your Salesforce Application Step Result ID |
+| "SF validation failed" | Double-check your Submission ID |
 | "Rate limited" | Wait a moment, then try again (max 30 calls/minute) |
-| Connection timeout | Verify your MCP server configuration in Cline settings |
+| Connection timeout | Verify your MCP server URL in Cline MCP settings |
 | Session expired | Your 120-minute window has elapsed — contact your recruiter |
-| Cline can't connect to MCP | Ensure transport type is "Streamable HTTP" and URL is correct |
+| Cline can't connect to MCP | Ensure the server URL is `https://hiring.devops.trilogy.com/mcp` |
 
 ---
 
