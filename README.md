@@ -38,11 +38,19 @@ Configure Cline's MCP connection to the assessment server:
 
 1. In the Cline panel, click the **settings gear** icon (top-right corner)
 2. Go to the **MCP Servers** tab
-3. Click **Remote Servers** → **Add Remote MCP Server**
-4. Enter:
-   - **Server URL**: `https://hiring.devops.trilogy.com/mcp`
-   - **Server Name**: `devops-rca` (or any name you prefer)
-5. Click **Add** and verify the server connects (you should see the available tools listed)
+3. Click **Edit MCP Settings** to open `cline_mcp_settings.json`
+4. Replace the contents with:
+   ```json
+   {
+     "mcpServers": {
+       "devops-rca": {
+         "url": "https://hiring.devops.trilogy.com/mcp",
+         "transportType": "streamable-http"
+       }
+     }
+   }
+   ```
+5. Save the file and go back to the MCP Servers tab — you should see **devops-rca** listed with its tools
 
 ### Step 3: Start Your Session
 
