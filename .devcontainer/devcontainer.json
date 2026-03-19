@@ -5,7 +5,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "saoudrizwan.claude-dev@3.34.0"
+        "saoudrizwan.claude-dev"
       ],
       "settings": {
         "chat.disableAIFeatures": true,
