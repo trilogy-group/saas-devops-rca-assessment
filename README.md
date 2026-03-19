@@ -36,12 +36,13 @@ Cline is pre-installed in this Codespace. Configure it to use our API:
 
 Configure Cline's MCP connection to the assessment server:
 
-1. In Cline, click the **MCP Servers** icon (plug icon in the top bar)
-2. Click **Remote Servers** → **Add Remote MCP Server**
-3. Enter:
+1. In the Cline panel, click the **settings gear** icon (top-right corner)
+2. Go to the **MCP Servers** tab
+3. Click **Remote Servers** → **Add Remote MCP Server**
+4. Enter:
    - **Server URL**: `https://hiring.devops.trilogy.com/mcp`
    - **Server Name**: `devops-rca` (or any name you prefer)
-4. Click **Add** and verify the server connects (you should see the available tools listed)
+5. Click **Add** and verify the server connects (you should see the available tools listed)
 
 ### Step 3: Start Your Session
 
