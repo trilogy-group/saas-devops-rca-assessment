@@ -1,0 +1,19 @@
+{
+  "name": "DevOps RCA Assessment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "postCreateCommand": "chmod +x ./submit && echo 'Environment ready! Open Cline to begin your investigation.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "saoudrizwan.claude-dev@3.34.0"
+      ],
+      "settings": {
+        "chat.disableAIFeatures": true,
+        "files.exclude": {
+          ".devcontainer": true,
+          ".gitignore": true
+        }
+      }
+    }
+  }
+}
