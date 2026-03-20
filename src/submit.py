@@ -55,7 +55,9 @@ def init_mcp_session() -> str:
             "clientInfo": {"name": "rca-submit", "version": "1.0"},
         },
     })
-    sid = headers.get("mcp-session-id", headers.get("Mcp-Session-Id", ""))
+    # Case-insensitive header lookup — server may return any capitalisation
+    lower_headers = {k.lower(): v for k, v in headers.items()}
+    sid = lower_headers.get("mcp-session-id", "")
     if not sid:
         raise RuntimeError("Failed to initialize MCP session — no session ID in response")
     mcp_post(sid, {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}})
