@@ -14,8 +14,7 @@
           ".gitignore": true,
           ".github": true,
           "src": true,
-          "build": true,
-          "SUBMISSION.json": true
+          "build": true
         }
       }
     }

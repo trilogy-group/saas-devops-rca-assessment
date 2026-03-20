@@ -5,4 +5,3 @@ __pycache__/
 .pytest_cache/
 build/pyinstaller-work/
 build/submit.spec
-SUBMISSION.json
