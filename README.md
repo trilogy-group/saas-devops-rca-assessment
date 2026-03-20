@@ -24,13 +24,14 @@ You will use **Cline** (the AI assistant pre-installed in this Codespace) to con
 Cline is pre-installed in this Codespace. Configure it to use our API:
 
 1. Open Cline from the VS Code sidebar (robot icon)
-2. Open Cline settings (from the Cline landing page → **Use your own key**, or press `F1` → **Cline: Focus on View** → Settings wheel → **API Configuration** tab)
+2. Open Cline settings (from the Cline landing page → **Bring my own API key**, or press `F1` → **Cline: Focus on View** → Settings wheel → **API Configuration** tab)
 3. Set the following:
    - **Provider**: `OpenAI Compatible`
    - **Base URL**: `https://wnogqpmdu74ndach7m36xntowe0ecgzb.lambda-url.us-east-1.on.aws/v1/`
    - **API Key**: Your **Submission ID** (from the SurveyMonkey form)
    - **Model ID**: `gpt-5.2`
-4. Do **NOT** use GitHub Copilot or any other AI assistant — use only Cline
+4. Click Continue
+5. Do **NOT** use GitHub Copilot or any other AI assistant — use only Cline
 
 ### Step 2: Connect to the MCP Server
 
@@ -43,6 +44,7 @@ Configure Cline's MCP connection to the assessment server:
    - **URL**: `https://hiring.devops.trilogy.com/mcp`
    - **Transport Type**: `Streamable HTTP`
 4. Click **Add Server** — you should see the available investigation tools listed
+5. Click Done button to proceed further
 
 ### Step 3: Start Your Session
 
@@ -106,6 +108,7 @@ This automatically:
 | Issue | Solution |
 |-------|----------|
 | "Session required" error | Ask Cline to call `start_session` first |
+| "No active session" after already starting | Cline may have reconnected to the MCP server (new transport session). Simply ask Cline to call `start_session` again with the same credentials — the server will automatically resume your existing session and timer. |
 | "SF validation failed" | Double-check your Submission ID |
 | "Rate limited" | Wait a moment, then try again (max 30 calls/minute) |
 | Connection timeout | Verify your MCP server URL in Cline MCP settings |

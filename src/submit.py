@@ -219,7 +219,7 @@ def get_submission_id() -> str:
 
 
 def main():
-    repo_root = Path(__file__).resolve().parent.parent
+    repo_root = Path.cwd()
 
     print()
     print("=== DevOps RCA Assessment — Submission ===")
