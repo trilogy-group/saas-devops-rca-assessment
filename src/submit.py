@@ -1,18 +1,15 @@
-"""DevOps RCA Assessment — Submission Tool.
+"""DevOps RCA Assessment — Submission Preparation Tool.
 
 Reads the candidate's RCA report and Cline conversation history,
-extracts tool call data, and submits everything to the assessment server.
+extracts tool call data, and writes a SUBMISSION.json file that
+the candidate then submits via Cline's submit_rca_v2 MCP tool.
 """
 
 import json
 import os
 import sys
-import urllib.request
-import urllib.error
 from pathlib import Path
 from typing import Optional
-
-MCP_ENDPOINT = "https://hiring.devops.trilogy.com/mcp"
 
 # Cline stores conversation history in VSCode extension globalStorage.
 # These are the known paths across platforms (Codespaces use vscode-server).
@@ -25,54 +22,6 @@ CLINE_HISTORY_SEARCH_PATHS = [
 ]
 
 HISTORY_FILENAMES = ["api_conversation_history.json", "ui_messages.json"]
-
-
-# ---------------------------------------------------------------------------
-# MCP transport
-# ---------------------------------------------------------------------------
-
-
-def mcp_post(session_id: str, payload: dict) -> tuple[str, dict]:
-    """POST a JSON-RPC message to the MCP server. Returns (body, headers)."""
-    data = json.dumps(payload).encode()
-    req = urllib.request.Request(MCP_ENDPOINT, data=data, method="POST")
-    req.add_header("Content-Type", "application/json")
-    if session_id:
-        req.add_header("mcp-session-id", session_id)
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        body = resp.read().decode()
-        headers = dict(resp.headers)
-        return body, headers
-
-
-def init_mcp_session() -> str:
-    """Perform MCP handshake, return session ID."""
-    _, headers = mcp_post("", {
-        "jsonrpc": "2.0", "id": 1, "method": "initialize",
-        "params": {
-            "protocolVersion": "2024-11-05",
-            "capabilities": {},
-            "clientInfo": {"name": "rca-submit", "version": "1.0"},
-        },
-    })
-    sid = headers.get("mcp-session-id", headers.get("Mcp-Session-Id", ""))
-    if not sid:
-        raise RuntimeError("Failed to initialize MCP session — no session ID in response")
-    mcp_post(sid, {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}})
-    return sid
-
-
-def call_tool(session_id: str, tool_name: str, arguments: dict) -> dict:
-    """Call an MCP tool and return the parsed result."""
-    body, _ = mcp_post(session_id, {
-        "jsonrpc": "2.0", "id": 2, "method": "tools/call",
-        "params": {"name": tool_name, "arguments": arguments},
-    })
-    parsed = json.loads(body)
-    if "error" in parsed:
-        raise RuntimeError(parsed["error"].get("message", json.dumps(parsed["error"])))
-    text = parsed.get("result", {}).get("content", [{}])[0].get("text", "{}")
-    return json.loads(text)
 
 
 # ---------------------------------------------------------------------------
@@ -121,7 +70,7 @@ def collect_cline_history(tasks_dir: Path) -> tuple[str, int]:
 
 
 # ---------------------------------------------------------------------------
-# Tool call extraction (replaces session audit)
+# Tool call extraction
 # ---------------------------------------------------------------------------
 
 
@@ -222,7 +171,7 @@ def main():
     repo_root = Path.cwd()
 
     print()
-    print("=== DevOps RCA Assessment — Submission ===")
+    print("=== DevOps RCA Assessment — Prepare Submission ===")
     print()
 
     # 0. Get Submission ID
@@ -253,59 +202,26 @@ def main():
         print("  Your AI interaction data will not be included.")
         print()
 
-    # 3. Connect to MCP server
-    print("  Connecting to assessment server...")
-    try:
-        session_id = init_mcp_session()
-        print("  Connected.")
-    except Exception as e:
-        print(f"\n  Error: Could not connect to MCP server.", file=sys.stderr)
-        print(f"  {e}", file=sys.stderr)
-        sys.exit(1)
-
-    # 4. Submit via submit_rca_v2 (fallback to submit_rca)
-    print("  Submitting...")
-
-    submit_args: dict = {"rca_summary": rca_text, "submission_id": submission_id}
+    # 3. Write SUBMISSION.json
+    submission = {
+        "submission_id": submission_id,
+        "rca_summary": rca_text,
+    }
     if cline_history:
-        submit_args["cline_history"] = cline_history
-        submit_args["tool_call_summary"] = tool_call_summary
+        submission["cline_history"] = cline_history
+        submission["tool_call_summary"] = tool_call_summary
 
-    try:
-        result = call_tool(session_id, "submit_rca_v2", submit_args)
-        if result.get("status") == "error":
-            raise RuntimeError(result.get("message", "Unknown error"))
-        print("  Submitted successfully.")
-        if result.get("rca_size_bytes"):
-            print(f"     RCA: {result['rca_size_bytes']} bytes")
-        if result.get("cline_history_size_bytes"):
-            print(f"     Cline history: {result['cline_history_size_bytes']} bytes")
-    except Exception as e:
-        print(f"  submit_rca_v2 not available ({e}). Falling back to submit_rca...")
-        try:
-            result = call_tool(session_id, "submit_rca", {"rca_summary": rca_text})
-            if result.get("status") == "error":
-                print(f"\n  Error: {result.get('message')}", file=sys.stderr)
-                sys.exit(1)
-            print("  RCA submitted (without conversation history).")
-        except Exception as fallback_err:
-            print(f"\n  Error: Submission failed — {fallback_err}", file=sys.stderr)
-            sys.exit(1)
-
-    # 5. End session
-    print("  Ending session...")
-    try:
-        end_result = call_tool(session_id, "end_session", {})
-        tool_calls_made = end_result.get("tool_calls_made", "N/A")
-        print(f"  Session ended. Tool calls made: {tool_calls_made}")
-    except Exception:
-        pass  # Session may already be ended
+    output_path = repo_root / "SUBMISSION.json"
+    output_path.write_text(json.dumps(submission, indent=2), encoding="utf-8")
 
     print()
-    print("=== Submission complete! ===")
+    print(f"  SUBMISSION.json written ({output_path.stat().st_size} bytes)")
     print()
-    print("Your RCA report and Cline conversation history have been submitted.")
-    print("You may close this Codespace. Thank you for completing the assessment.")
+    print("=== Preparation complete! ===")
+    print()
+    print("Now ask Cline to submit by saying:")
+    print()
+    print('  "Read SUBMISSION.json and call submit_rca_v2 with its contents."')
     print()
 
 

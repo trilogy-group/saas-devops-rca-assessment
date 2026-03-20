@@ -11,7 +11,11 @@
         "chat.disableAIFeatures": true,
         "files.exclude": {
           ".devcontainer": true,
-          ".gitignore": true
+          ".gitignore": true,
+          ".github": true,
+          "src": true,
+          "build": true,
+          "SUBMISSION.json": true
         }
       }
     }

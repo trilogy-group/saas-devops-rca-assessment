@@ -75,6 +75,10 @@ Focus on technical accuracy and evidence. No need for long prose — fill out ev
 
 ### Step 6: Submit
 
+Submission is a two-step process:
+
+**Step 6a: Prepare your submission**
+
 Run from the terminal:
 
 ```bash
@@ -86,10 +90,17 @@ Replace `YOUR_SUBMISSION_ID` with the Submission ID from the SurveyMonkey form.
 This automatically:
 - Captures your RCA report from `RCA_REPORT.md`
 - Captures your Cline conversation history
-- Submits everything to the assessment server
-- Ends your session
+- Writes everything to `SUBMISSION.json`
 
-**Do not manually call `end_session`** — the submit script handles this.
+**Step 6b: Submit via Cline**
+
+Ask Cline:
+
+> "Read SUBMISSION.json and call submit_rca_v2 with its contents."
+
+Cline will read the file and submit it through the MCP server.
+
+After successful submission, ask Cline to call `end_session` to close your assessment.
 
 ---
 
