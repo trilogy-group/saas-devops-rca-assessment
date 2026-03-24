@@ -32,6 +32,8 @@
 
 ## Root Cause Analysis
 
+Use the [5 Whys technique](https://en.wikipedia.org/wiki/Five_whys) for each category below. Start with the observable symptom and ask "Why?" repeatedly until you reach a systemic or process-level root cause.
+
 ### Monitoring Root Cause
 
 [Please comment on monitoring failures or potential improvements related to this incident.]
