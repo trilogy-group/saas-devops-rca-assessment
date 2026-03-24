@@ -36,41 +36,45 @@
 
 [Please comment on monitoring failures or potential improvements related to this incident.]
 
-1st Why: What alarm(s) should have fired but didn't, that contributed to the outage?
-2nd Why:
-3rd Why:
-4th Why:
-5th Why:
+**Example** (unrelated to this incident):
+> **1st Why — Q:** Why did the outage last 30 minutes before anyone noticed? **A:** The disk-space alarm never fired.
+> **2nd Why — Q:** Why didn't the disk-space alarm fire? **A:** The alarm threshold was set to 95%, but the volume filled to 100% in a single burst between evaluation intervals.
+
+1st Why — Q: [What alarm(s) should have fired but didn't?] A: [answer]
+2nd Why — Q: [Why didn't that alarm fire?] A: [answer]
+3rd Why — Q: A:
+4th Why — Q: A:
+5th Why — Q: A:
 
 ### Engineering Root Cause
 
 [Please comment if software bugs or application behavior caused the incident.]
 
-1st Why:
-2nd Why:
-3rd Why:
-4th Why:
-5th Why:
+1st Why — Q: A:
+2nd Why — Q: A:
+3rd Why — Q: A:
+4th Why — Q: A:
+5th Why — Q: A:
 
 ### Process Root Cause (Change Management)
 
 [Please comment if any provisioning, deployment, removal, or testing activities have impacted system stability and contributed to the incident.]
 
-1st Why:
-2nd Why:
-3rd Why:
-4th Why:
-5th Why:
+1st Why — Q: A:
+2nd Why — Q: A:
+3rd Why — Q: A:
+4th Why — Q: A:
+5th Why — Q: A:
 
 ### Infrastructure Root Cause
 
 [Please evaluate the role of core services and components, such as databases and network infrastructure, in the incident.]
 
-1st Why:
-2nd Why:
-3rd Why:
-4th Why:
-5th Why:
+1st Why — Q: A:
+2nd Why — Q: A:
+3rd Why — Q: A:
+4th Why — Q: A:
+5th Why — Q: A:
 
 ---
 
