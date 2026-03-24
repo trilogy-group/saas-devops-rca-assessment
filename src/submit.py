@@ -1,11 +1,11 @@
 """DevOps RCA Assessment — Submission Tool.
 
 Reads the candidate's RCA report and Cline conversation history,
-extracts tool call data, and submits everything to the assessment server.
+extracts tool call data, and submits everything to the assessment
+server via submit_rca_v2.
 """
 
 import json
-import os
 import sys
 import urllib.request
 import urllib.error
@@ -55,7 +55,9 @@ def init_mcp_session() -> str:
             "clientInfo": {"name": "rca-submit", "version": "1.0"},
         },
     })
-    sid = headers.get("mcp-session-id", headers.get("Mcp-Session-Id", ""))
+    # Case-insensitive header lookup — server may return any capitalisation
+    lower_headers = {k.lower(): v for k, v in headers.items()}
+    sid = lower_headers.get("mcp-session-id", "")
     if not sid:
         raise RuntimeError("Failed to initialize MCP session — no session ID in response")
     mcp_post(sid, {"jsonrpc": "2.0", "method": "notifications/initialized", "params": {}})
@@ -86,7 +88,6 @@ def find_cline_history_dir() -> Optional[Path]:
     for template in CLINE_HISTORY_SEARCH_PATHS:
         candidate = Path(template.format(home=home))
         if candidate.is_dir():
-            # Verify it has at least one task with conversation data
             for task_dir in candidate.iterdir():
                 if not task_dir.is_dir():
                     continue
@@ -121,7 +122,7 @@ def collect_cline_history(tasks_dir: Path) -> tuple[str, int]:
 
 
 # ---------------------------------------------------------------------------
-# Tool call extraction (replaces session audit)
+# Tool call extraction
 # ---------------------------------------------------------------------------
 
 
@@ -141,7 +142,6 @@ def extract_tool_calls(history_json: str) -> str:
     for conv in conversations:
         messages = conv.get("messages", [])
         for msg in messages:
-            # Cline logs MCP tool requests as "mcp_server_request_started" events
             if msg.get("type") == "say" and msg.get("say") == "mcp_server_request_started":
                 try:
                     req_data = json.loads(msg.get("text", "{}"))
@@ -153,7 +153,6 @@ def extract_tool_calls(history_json: str) -> str:
                 except (json.JSONDecodeError, TypeError):
                     continue
 
-            # Also check content blocks for tool_use entries
             if isinstance(msg.get("content"), list):
                 for block in msg["content"]:
                     if isinstance(block, dict) and block.get("type") == "tool_use":
@@ -205,12 +204,29 @@ def read_rca_report(repo_root: Path) -> str:
 # ---------------------------------------------------------------------------
 
 
+def get_submission_id() -> str:
+    """Get the Submission ID from CLI argument or interactive prompt."""
+    if len(sys.argv) > 1:
+        return sys.argv[1].strip()
+
+    print("  Enter your Submission ID (from SurveyMonkey): ", end="", flush=True)
+    sid = input().strip()
+    if not sid:
+        print("Error: Submission ID is required.", file=sys.stderr)
+        sys.exit(1)
+    return sid
+
+
 def main():
-    repo_root = Path(__file__).resolve().parent.parent
+    repo_root = Path.cwd()
 
     print()
     print("=== DevOps RCA Assessment — Submission ===")
     print()
+
+    # 0. Get Submission ID
+    submission_id = get_submission_id()
+    print(f"  Submission ID:   {submission_id[:8]}...")
 
     # 1. Read RCA
     rca_text = read_rca_report(repo_root)
@@ -246,10 +262,10 @@ def main():
         print(f"  {e}", file=sys.stderr)
         sys.exit(1)
 
-    # 4. Submit via submit_rca_v2 (fallback to submit_rca)
+    # 4. Submit via submit_rca_v2
     print("  Submitting...")
 
-    submit_args: dict = {"rca_summary": rca_text}
+    submit_args: dict = {"rca_summary": rca_text, "submission_id": submission_id}
     if cline_history:
         submit_args["cline_history"] = cline_history
         submit_args["tool_call_summary"] = tool_call_summary
@@ -264,31 +280,14 @@ def main():
         if result.get("cline_history_size_bytes"):
             print(f"     Cline history: {result['cline_history_size_bytes']} bytes")
     except Exception as e:
-        print(f"  submit_rca_v2 not available ({e}). Falling back to submit_rca...")
-        try:
-            result = call_tool(session_id, "submit_rca", {"rca_summary": rca_text})
-            if result.get("status") == "error":
-                print(f"\n  Error: {result.get('message')}", file=sys.stderr)
-                sys.exit(1)
-            print("  RCA submitted (without conversation history).")
-        except Exception as fallback_err:
-            print(f"\n  Error: Submission failed — {fallback_err}", file=sys.stderr)
-            sys.exit(1)
-
-    # 5. End session
-    print("  Ending session...")
-    try:
-        end_result = call_tool(session_id, "end_session", {})
-        tool_calls_made = end_result.get("tool_calls_made", "N/A")
-        print(f"  Session ended. Tool calls made: {tool_calls_made}")
-    except Exception:
-        pass  # Session may already be ended
+        print(f"\n  Error: Submission failed — {e}", file=sys.stderr)
+        sys.exit(1)
 
     print()
     print("=== Submission complete! ===")
     print()
-    print("Your RCA report and Cline conversation history have been submitted.")
-    print("You may close this Codespace. Thank you for completing the assessment.")
+    print("Your RCA report and conversation history have been submitted.")
+    print("Now ask Cline to call end_session to finish your assessment.")
     print()
 
 

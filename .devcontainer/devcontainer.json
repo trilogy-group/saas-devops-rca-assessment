@@ -5,13 +5,19 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "saoudrizwan.claude-dev@3.34.0"
+        "saoudrizwan.claude-dev"
       ],
       "settings": {
         "chat.disableAIFeatures": true,
         "files.exclude": {
           ".devcontainer": true,
-          ".gitignore": true
+          ".gitignore": true,
+          ".github": true,
+          ".clinerules": true,
+          ".pytest_cache": true,
+          "src": true,
+          "build": true,
+          "tests": true
         }
       }
     }
