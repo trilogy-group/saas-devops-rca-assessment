@@ -14,8 +14,10 @@
           ".gitignore": true,
           ".github": true,
           ".clinerules": true,
+          ".pytest_cache": true,
           "src": true,
-          "build": true
+          "build": true,
+          "tests": true
         }
       }
     }

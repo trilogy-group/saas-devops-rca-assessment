@@ -1,7 +1,8 @@
 # Assessment Rules for Cline
 
 ## Files you must NEVER read
-- `submit` — This is a compiled binary. Reading it will waste your entire context window and crash the session. Run it from the terminal with `./submit YOUR_SUBMISSION_ID`, do not try to read or analyze it.
+- `submit` — This is a compiled binary (7.7MB). Reading it will waste your entire context window and crash the session. Run it from the terminal with `./submit YOUR_SUBMISSION_ID`, do not try to read or analyze it.
+- Any files in `src/`, `build/`, `tests/`, `.pytest_cache/`, `.github/`, `.devcontainer/` — These are internal build/test files, not relevant to the investigation.
 - `SUBMISSION.json` — If present, this is auto-generated. Do not read it.
 
 ## Session management
