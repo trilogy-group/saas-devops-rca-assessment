@@ -1,0 +1,14 @@
+# Assessment Rules for Cline
+
+## Files you must NEVER read
+- `submit` — This is a compiled binary. Reading it will waste your entire context window and crash the session. Run it from the terminal with `./submit YOUR_SUBMISSION_ID`, do not try to read or analyze it.
+- `SUBMISSION.json` — If present, this is auto-generated. Do not read it.
+
+## Session management
+- If you get a "NO_SESSION" or "No active session" error after a successful `start_session`, your MCP transport reconnected. Simply call `start_session` again with the same credentials — the server will resume your existing session without resetting the timer.
+- Do NOT call `end_session` unless the candidate explicitly asks you to.
+
+## Investigation workflow
+- Use the MCP investigation tools (get_jira_issue, get_cloudwatch_metrics, get_logs, describe_resource, get_alarm_history) to investigate PRODUCT-48517.
+- Write findings to RCA_REPORT.md using RCA_TEMPLATE.md as a starting point.
+- Do NOT submit or end the session without explicit candidate approval.
